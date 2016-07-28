@@ -232,7 +232,10 @@ class PokemonCatchWorker(object):
         return id_list
 
     def should_release_pokemon(self, pokemon_name, cp, iv, response_dict):
-        if self._check_always_capture_exception_for(pokemon_name):
+        # If we don't have this pokemon, keep it anyway
+	if not next((p for p in self.pokemon_list if p['Name'] == pokemon_name), False):
+	    return False 
+	if self._check_always_capture_exception_for(pokemon_name):
             return False
         else:
             release_config = self._get_release_config_for(pokemon_name)
